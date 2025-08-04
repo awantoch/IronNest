@@ -48,7 +48,7 @@ pub async fn insert_devices_into_db(
     devices: &Vec<Device>,
 ) -> Result<(), sqlx::Error> {
     for device in devices {
-        println!("insert_devices_into_db device {:?}", device);
+        println!("insert_devices_into_db device {device:?}");
         let query = "
             INSERT INTO device (
                 name,
@@ -149,7 +149,7 @@ pub async fn schedule_task(
                     let fn_name = (*function_name_clone).clone();
                     let fn_args = (*function_args_clone).clone();
 
-                    println!("Calling {}", fn_name);
+                    println!("Calling {fn_name}");
                     execute_function(fn_name, fn_args).await;
                 })
             })
@@ -440,7 +440,7 @@ pub fn tuya_job(
                         let res = get_devices("az17063780590351Cr1b", &tuya_auth.auth_token)
                             .await
                             .unwrap();
-                        println!("{:?}", res);
+                        println!("{res:?}");
                         let devices: Vec<Device> = res
                             .result
                             .iter().enumerate()
@@ -460,7 +460,7 @@ pub fn tuya_job(
                             })
                             .collect();
 
-                        println!("bhap: {:?}", devices);
+                        println!("bhap: {devices:?}");
                         insert_devices_into_db(&shared_pool, &devices)
                             .await
                             .unwrap();
@@ -472,14 +472,14 @@ pub fn tuya_job(
                                 discover_tuya_devices(),
                             ).await {
                                 Ok(Ok(_)) => println!("Local Tuya discovery completed."),
-                                Ok(Err(e)) => println!("Error during local Tuya discovery: {}", e),
+                                Ok(Err(e)) => println!("Error during local Tuya discovery: {e}"),
                                 Err(_) => println!("Local Tuya discovery timed out."),
                             }
                         });
                     }
                 },
                 Some(msg) = control_rx.recv() => {
-                    println!("Received control message: {:?}", msg);
+                    println!("Received control message: {msg:?}");
                     if !match_control_message(msg, &mut running) {
                         break;
                     }
@@ -534,7 +534,7 @@ pub fn eufy_job(
                     }
                 },
                 Some(msg) = control_rx.recv() => {
-                    println!("Received control message: {:?}", msg);
+                    println!("Received control message: {msg:?}");
                     if !match_control_message(msg, &mut running) {
                         break;
                     }
@@ -612,7 +612,7 @@ pub fn ring_job(
                     }
                 },
                 Some(msg) = control_rx.recv() => {
-                    println!("Received control message: {:?}", msg);
+                    println!("Received control message: {msg:?}");
                     if !match_control_message(msg, &mut running) {
                         break;
                     }

@@ -63,7 +63,7 @@ async fn set_ipld_blob(content: String) -> Result<String, ServerFnError> {
     let pool = use_context::<sqlx::PgPool>().unwrap();
     let content = hex::decode(content).unwrap();
     let cid = set_mish_state_query(&pool, content).await?;
-    println!("cid: {}", cid);
+    println!("cid: {cid}");
     Ok(cid.to_string())
 }
 
@@ -230,14 +230,13 @@ pub fn IpldBlobPage() -> impl IntoView {
                                                                 >>::decode_from_slice(&state);
                                                                 match parsed {
                                                                     Ok(parsed) => {
-                                                                        // content is already hex encoded
                                                                         view! {
                                                                             <JsonEditor
                                                                                 state=Some(parsed)
                                                                                 set_config_server_action=move |content| {
                                                                                     set_ipld_blob_action
                                                                                         .dispatch(SetIpldBlob {
-                                                                                            content: hex::encode(content),
+                                                                                            content: hex::encode(serde_json::to_vec(&content).unwrap()),
                                                                                         });
                                                                                 }
                                                                             />

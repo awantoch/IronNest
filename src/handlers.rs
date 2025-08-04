@@ -9,11 +9,11 @@ pub async fn roku_keypress_handler(
         "10.0.0.217"
     };
 
-    let roku_url = format!("http://{}:8060/keypress/{}", roku_ip, key);
+    let roku_url = format!("http://{roku_ip}:8060/keypress/{key}");
     let client = reqwest::Client::new();
 
     match client.post(&roku_url).send().await {
-        Ok(_) => Ok(format!("Key pressed: {}", key)),
+        Ok(_) => Ok(format!("Key pressed: {key}")),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }

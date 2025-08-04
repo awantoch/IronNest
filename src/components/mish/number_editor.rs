@@ -3,7 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn NumberEditor(
     state: String,
-    set_config_server_action: impl Fn(Vec<u8>) + 'static,
+    set_config_server_action: impl Fn(serde_json::Value) + 'static,
 ) -> impl IntoView {
     let (state, set_state) = signal(state);
     view! {
@@ -17,7 +17,7 @@ pub fn NumberEditor(
             let s = serde_json::from_str::<serde_json::Value>(&s);
             if let Ok(s) = s {
                 if s.is_number() {
-                    set_config_server_action(serde_json::to_vec(&s).unwrap());
+                    set_config_server_action(s);
                 } else {
                     web_sys::window()
                         .unwrap()
@@ -27,7 +27,7 @@ pub fn NumberEditor(
             } else {
                 web_sys::window()
                     .unwrap()
-                    .alert_with_message(&format!("Error parsing number: {:?}", s))
+                    .alert_with_message(&format!("Error parsing number: {s:?}"))
                     .unwrap();
             }
         }>"Save"</button>

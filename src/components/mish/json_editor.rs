@@ -1,11 +1,11 @@
-use leptos::prelude::*;
+use {leptos::prelude::*, thaw::Textarea};
 
 #[component]
 pub fn JsonEditor(
     state: Option<serde_json::Value>,
-    set_config_server_action: impl Fn(Vec<u8>) + 'static,
+    set_config_server_action: impl Fn(serde_json::Value) + 'static,
 ) -> impl IntoView {
-    let (state, set_state) = signal(
+    let value = RwSignal::new(
         state
             .map(|s| serde_json::to_string_pretty(&s).unwrap())
             .unwrap_or_default(),
@@ -13,19 +13,12 @@ pub fn JsonEditor(
 
     view! {
         <p>"Raw editor"</p>
-        <textarea
-            on:input=move |ev| {
-                set_state.set(event_target_value(&ev));
-            }
-            style="height: 200px; width: 100%;"
-        >
-            {state}
-        </textarea>
+        <Textarea value placeholder="Textarea" />
         <button on:click=move |_| {
-            let s = state.get();
+            let s = value.get();
             match serde_json::from_str::<serde_json::Value>(&s) {
                 Ok(s) => {
-                    set_config_server_action(serde_json::to_vec(&s).unwrap());
+                    set_config_server_action(s);
                 }
                 Err(e) => {
                     web_sys::window()

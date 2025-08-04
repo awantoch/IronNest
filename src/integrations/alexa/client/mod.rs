@@ -48,6 +48,6 @@ pub async fn login(_email: &str, _password: &str) -> Result<(), reqwest::Error> 
         .send()
         .await?;
 
-    print!("{:?}", blank_request);
+    println!("{blank_request:?}");
     Ok(())
 }

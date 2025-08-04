@@ -156,7 +156,7 @@ pub async fn get_devices(auth_token: String) {
         .unwrap();
     println!("res: {res:?}");
     let device_res = res.text().await.unwrap();
-    println!("device_res: {:?}", device_res);
+    println!("device_res: {device_res:?}");
 }
 
 fn encrypt_api_data(data: &str, key: &[u8]) -> Result<String, Box<dyn std::error::Error>> {

@@ -101,7 +101,7 @@ pub async fn get_dashboard_values() -> Result<DashboardValues, ServerFnError> {
                 owner_id: "".to_string(),
             })
             .collect();
-        println!("{:?}", video_items);
+        println!("{video_items:?}");
 
         cameras.push(RingCamera {
             id: ring_camera_row.get("id"),
@@ -326,15 +326,13 @@ pub fn DashboardPage() -> impl IntoView {
                         None => {
                             panel_data.device_ids = Some(vec![device_id]);
                             println!(
-                                "Initialized device_ids and added device ID {} to panel '{}'",
-                                device_id, target_panel_id
+                                "Initialized device_ids and added device ID {device_id} to panel '{target_panel_id}'"
                             );
                         }
                     });
             } else {
                 println!(
-                    "Panel '{}' not found. Creating a new panel and adding device ID {}.",
-                    target_panel_id, device_id
+                    "Panel '{target_panel_id}' not found. Creating a new panel and adding device ID {device_id}."
                 );
                 map.insert(
                     target_panel_id.clone(),

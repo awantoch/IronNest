@@ -137,10 +137,10 @@ pub fn MishStatePage() -> impl IntoView {
         |(_version, name)| get_mish_state(name),
     );
 
-    let set_mish_state_action2 = move |state: Vec<u8>| {
+    let set_mish_state_action2 = move |state: serde_json::Value| {
         set_mish_state_action.dispatch(SetMishState {
             name: name(),
-            state: hex::encode(state),
+            state: hex::encode(serde_json::to_vec(&state).unwrap()),
         });
     };
 
