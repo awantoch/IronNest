@@ -33,13 +33,12 @@ dotenv = "0.15.0"
 futures = "0.3.29"
 hex = "0.4.3"
 http = "1.2.0"
-leptos = { version = "0.8.4" }
-server_fn = { version = "0.8.4", features = ["cbor"] }
-leptos_axum = { version = "0.8.4", optional = true }
-leptos_meta = { version = "0.8.4" }
-leptos_router = { version = "0.8.4" }
+leptos = { version = "0.8.6" }
+server_fn = { version = "0.8.5", features = ["cbor"] }
+leptos_axum = { version = "0.8.5", optional = true }
+leptos_meta = { version = "0.8.5" }
+leptos_router = { version = "0.8.5" }
 leptos-use = "0.16.2"
-leptos_reactive = "0.7.0-preview2"
 log = "0.4.20"
 rand = "0.8.5"
 reqwest = { workspace = true, features = ["json"] }
@@ -91,7 +90,6 @@ serde_yaml = "0.9.34"
 gloo-timers = "0.3.0"
 csscolorparser = "0.7.0"
 getrandom = { version = "0.2.15", features = ["js"] }
-leptos_drag_reorder = "0.1.0"
 rhai = { version = "1.21.0", features = ["metadata", "sync"] }
 ipld-core = { workspace = true }
 serde_ipld_dagjson = { workspace = true }
@@ -99,9 +97,10 @@ multibase = { workspace = true }
 multihash-codetable = { workspace = true, features = ["sha2"] }
 cid = { workspace = true, features = ["serde"] }
 jsonpath-rust = "1.0.2"
+thaw = { git = "https://github.com/thaw-ui/thaw", branch = "main" }
 
 [features]
-hydrate = ["leptos/hydrate"]
+hydrate = ["leptos/hydrate", "thaw/csr"]
 ssr = [
   "dep:leptos_axum",
   "leptos/ssr",
@@ -122,7 +121,8 @@ ssr = [
   "dep:elliptic-curve",
   "dep:rand_core",
   "dep:async-nats",
-  "reqwest/cookies"
+  "reqwest/cookies",
+  "thaw/ssr",
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
