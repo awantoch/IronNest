@@ -1,7 +1,7 @@
 use {
     crate::components::mish::{
-        json_editor::JsonEditor, mish_button::MishButton, number_editor::NumberEditor,
-        text_editor::TextEditor,
+        json_editor::JsonEditor, mish_button::MishButton, mish_dashboard::MishDashboard,
+        number_editor::NumberEditor, text_editor::TextEditor,
     },
     leptos::prelude::*,
     std::sync::Arc,
@@ -76,6 +76,8 @@ pub fn Editor(
                         let action = Arc::new(action);
                         if let Some(v) = o.get("-") && let Some(v) = v.as_str() && v == "mish-button" {
                             view! { <MishButton value=state.clone() /> }.into_any()
+                        } else if let Some(v) = o.get("-") && let Some(v) = v.as_str() && v == "mish-dashboard" {
+                            view! { <MishDashboard value=state.clone() /> }.into_any()
                         } else if let Some(v) = o.get("/") && let Some(cid) = v.as_str() {
                             view! { <a href=format!("/settings/dag-inspector/ipld-blob/{cid}")>"CID: "{cid.to_string()}</a> }.into_any()
                         } else {

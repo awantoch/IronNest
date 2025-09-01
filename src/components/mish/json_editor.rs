@@ -1,4 +1,7 @@
-use {leptos::prelude::*, thaw::Textarea};
+use {
+    leptos::prelude::*,
+    thaw::{Textarea, TextareaResize},
+};
 
 #[component]
 pub fn JsonEditor(
@@ -13,7 +16,7 @@ pub fn JsonEditor(
 
     view! {
         <p>"Raw editor"</p>
-        <Textarea value placeholder="Textarea" />
+        <Textarea value placeholder="Textarea" resize=TextareaResize::Both />
         <button on:click=move |_| {
             let s = value.get();
             match serde_json::from_str::<serde_json::Value>(&s) {

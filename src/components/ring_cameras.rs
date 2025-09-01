@@ -1,7 +1,11 @@
 use {
-    crate::integrations::ring::types::{RingCamera, VideoItem},
+    crate::{
+        components::pages::dashboard_page::get_dashboard_values,
+        integrations::ring::types::{RingCamera, VideoItem},
+    },
     chrono::{DateTime, Utc},
     leptos::prelude::*,
+    thaw::Spinner,
 };
 
 #[component]
@@ -135,5 +139,49 @@ fn calculate_width(duration: i32, timeline_width: i32) -> i32 {
         min_width
     } else {
         calculated_width
+    }
+}
+#[component]
+pub fn RingCameraPanelWithData(camera_id: String) -> impl IntoView {
+    let dashboard_values = Resource::new(|| (), |_| async { get_dashboard_values().await });
+
+    view! {
+        <Suspense fallback=move || {
+            view! { <Spinner /> }
+        }>
+            {move || {
+                dashboard_values
+                    .get()
+                    .map(|data| {
+                        match data {
+                            Ok(data) => {
+                                println!("{:?}", data.cameras.first().map(|c| c.id));
+                                println!("Looking for camera with ID: {camera_id}");
+                                let camera = data
+                                    .cameras
+                                    .iter()
+                                    .find(|c| c.id.to_string() == camera_id);
+                                match camera {
+                                    Some(camera) => {
+                                        println!("Found camera: {:?}", camera.id);
+                                        view! { <RingCameraPanel camera=camera.clone() /> }
+                                            .into_any()
+                                    }
+                                    None => {
+                                        println!("Camera with ID {camera_id} not found");
+                                        view! {
+                                            <div class="bg-gray-200 h-full flex items-center justify-center text-gray-600">
+                                                "Camera Not Found"
+                                            </div>
+                                        }
+                                            .into_any()
+                                    }
+                                }
+                            }
+                            Err(e) => view! { <p>{format!("Error: {e}")}</p> }.into_any(),
+                        }
+                    })
+            }}
+        </Suspense>
     }
 }

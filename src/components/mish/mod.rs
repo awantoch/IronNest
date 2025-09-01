@@ -3,6 +3,7 @@ pub mod editor;
 pub mod ipld_blob_page;
 pub mod json_editor;
 pub mod mish_button;
+pub mod mish_dashboard;
 pub mod mish_state_page;
 pub mod new_mish_state_dialog;
 pub mod number_editor;
