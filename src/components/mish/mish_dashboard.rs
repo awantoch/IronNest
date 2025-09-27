@@ -6,12 +6,18 @@ use {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MishDashboardValue {
+    pub layout: MishDashboardLayout,
     pub panels: Vec<MishDashboardPanel>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MishDashboardPanel {
     Ring { camera_id: String },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum MishDashboardLayout {
+    Grid { columns: i32 },
 }
 
 #[component]
@@ -21,20 +27,33 @@ pub fn MishDashboard(value: serde_json::Value) -> impl IntoView {
         {match value {
             Ok(value) => {
                 view! {
-                    {value
-                        .panels
-                        .iter()
-                        .map(|panel| {
-                            match panel {
-                                MishDashboardPanel::Ring { camera_id } => {
-                                    view! {
-                                        <RingCameraPanelWithData camera_id=camera_id.clone() />
-                                    }
-                                        .into_any()
+                    <div style=match value.layout {
+                        MishDashboardLayout::Grid { columns } => {
+                            format!(
+                                "display: grid; grid-template-columns: repeat({}, 1fr); gap: 10px;",
+                                columns,
+                            )
+                        }
+                    }>
+                        {value
+                            .panels
+                            .iter()
+                            .map(|panel| {
+                                view! {
+                                    <div>
+                                        {match panel {
+                                            MishDashboardPanel::Ring { camera_id } => {
+                                                view! {
+                                                    <RingCameraPanelWithData camera_id=camera_id.clone() />
+                                                }
+                                                    .into_any()
+                                            }
+                                        }}
+                                    </div>
                                 }
-                            }
-                        })
-                        .collect::<Vec<_>>()}
+                            })
+                            .collect::<Vec<_>>()}
+                    </div>
                 }
                     .into_any()
             }
