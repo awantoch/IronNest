@@ -54,52 +54,44 @@ pub fn DagInspectorPage() -> impl IntoView {
     );
 
     view! {
-        <main class="lg:p-40 lg:pt-20 cursor-pointer">
-            <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
-                <div>
-                    <h2 class="text-base font-semibold leading-7 text-gray-900">"Configs"</h2>
-                    <p class="mt-1 text-sm leading-6 text-gray-500">
-                        "Import and export your configuration in YAML format."
-                    </p>
-                    <NewMishStateDialog />
-                    <Suspense fallback=|| {
-                        view! { <p>"Loading Mish States..."</p> }
-                    }>
-                        {move || {
-                            values
-                                .get()
-                                .map(|values| {
-                                    match values {
-                                        Err(e) => {
-                                            view! { <p>"Error loading values: " {e.to_string()}</p> }
-                                                .into_any()
-                                        }
-                                        Ok(values) => {
-                                            view! {
-                                                {values
-                                                    .into_iter()
-                                                    .map(|state| {
-                                                        view! {
-                                                            <div>
-                                                                <h3>
-                                                                    <a href=format!(
-                                                                        "/settings/dag-inspector/mish-state/{}",
-                                                                        state.name,
-                                                                    )>{state.name.clone()}</a>
-                                                                </h3>
-                                                            </div>
-                                                        }
-                                                    })
-                                                    .collect::<Vec<_>>()}
-                                            }
-                                                .into_any()
-                                        }
+        <main>
+            <NewMishStateDialog />
+            <Suspense fallback=|| {
+                view! { <p>"Loading Mish States..."</p> }
+            }>
+                {move || {
+                    values
+                        .get()
+                        .map(|values| {
+                            match values {
+                                Err(e) => {
+                                    view! { <p>"Error loading values: " {e.to_string()}</p> }
+                                        .into_any()
+                                }
+                                Ok(values) => {
+                                    view! {
+                                        {values
+                                            .into_iter()
+                                            .map(|state| {
+                                                view! {
+                                                    <div>
+                                                        <h3>
+                                                            <a href=format!(
+                                                                "/settings/dag-inspector/mish-state/{}",
+                                                                state.name,
+                                                            )>{state.name.clone()}</a>
+                                                        </h3>
+                                                    </div>
+                                                }
+                                            })
+                                            .collect::<Vec<_>>()}
                                     }
-                                })
-                        }}
-                    </Suspense>
-                </div>
-            </div>
+                                        .into_any()
+                                }
+                            }
+                        })
+                }}
+            </Suspense>
         </main>
     }
 }

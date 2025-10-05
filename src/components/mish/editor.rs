@@ -87,10 +87,10 @@ pub fn Editor(
                                     let o = o.clone();
                                     let action = action.clone();
                                     view! {
-                                        <div>"Key: "{k.clone()}</div>
-                                        <div>
-                                            "Value: " {serde_json::to_string_pretty(&v).unwrap()}
-                                        </div>
+                                        // <div>"Key: "{k.clone()}</div>
+                                        // <div>
+                                        // "Value: " {serde_json::to_string_pretty(&v).unwrap()}
+                                        // </div>
                                         <div style="border-left: 5px solid black">
                                             <NestedEditor
                                                 state=v.clone()
@@ -119,7 +119,7 @@ pub fn Editor(
             <label for="raw-editor-mode">"RAW editor mode"</label>
             <input type="checkbox" id="raw-editor-mode" bind:checked=raw_editor_mode />
         </div>
-        <div>{serde_json::to_string_pretty(&state).unwrap()}</div>
+        // <div>{serde_json::to_string_pretty(&state).unwrap()}</div>
         {editor}
     }
 }

@@ -80,8 +80,7 @@ fn create_video_timeline(
         <div
             class="video-timeline mb-2"
             style=format!(
-                "overflow-x: auto; white-space: nowrap; padding: 10px; background: #eee; position: relative; width: {}px; height:25px;",
-                timeline_width,
+                "overflow-x: auto; white-space: nowrap; padding: 10px; background: #eee; position: relative; height:25px;",
             )
         >
 
@@ -141,6 +140,7 @@ fn calculate_width(duration: i32, timeline_width: i32) -> i32 {
         calculated_width
     }
 }
+
 #[component]
 pub fn RingCameraPanelWithData(camera_id: String) -> impl IntoView {
     let dashboard_values = Resource::new(|| (), |_| async { get_dashboard_values().await });

@@ -98,6 +98,7 @@ multihash-codetable = { workspace = true, features = ["sha2"] }
 cid = { workspace = true, features = ["serde"] }
 jsonpath-rust = "1.0.2"
 thaw = { git = "https://github.com/thaw-ui/thaw", branch = "main" }
+icondata = "0.6.0"
 
 [features]
 hydrate = ["leptos/hydrate", "thaw/csr"]

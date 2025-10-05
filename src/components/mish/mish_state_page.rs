@@ -11,6 +11,7 @@ use {
     },
     serde::{Deserialize, Serialize},
     serde_ipld_dagjson::codec::DagJsonCodec,
+    thaw::{Icon, Tooltip},
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -178,91 +179,90 @@ pub fn MishStatePage() -> impl IntoView {
     );
 
     view! {
-        <main class="lg:p-40 lg:pt-20 cursor-pointer">
-            <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
+        <main>
+            <div>
+                <a href="/settings/dag-inspector">"Back to Dag Inspector"</a>
+            </div>
+            <Suspense fallback=|| {
+                view! { <p>"Loading Mish State..."</p> }
+            }>
                 <div>
-                    <div>
-                        <a href="/settings/dag-inspector">"Back to Dag Inspector"</a>
-                    </div>
-                    <Suspense fallback=|| {
-                        view! { <p>"Loading Mish State..."</p> }
-                    }>
-                        <div>
-                            {move || {
-                                values
-                                    .get()
-                                    .map(|values| {
-                                        match values {
-                                            Err(e) => {
+                    {move || {
+                        values
+                            .get()
+                            .map(|values| {
+                                match values {
+                                    Err(e) => {
+                                        view! {
+                                            <p>"Error loading Mish State: " {e.to_string()}</p>
+                                        }
+                                            .into_any()
+                                    }
+                                    Ok(value) => {
+                                        value
+                                            .map(|state| {
                                                 view! {
-                                                    <p>"Error loading Mish State: " {e.to_string()}</p>
+                                                    <Editor state=state.state action=set_mish_state_action2 />
                                                 }
                                                     .into_any()
-                                            }
-                                            Ok(value) => {
-                                                value
-                                                    .map(|state| {
-                                                        view! {
-                                                            <Editor state=state.state action=set_mish_state_action2 />
-                                                        }
-                                                            .into_any()
-                                                    })
-                                                    .unwrap_or_else(|| {
-                                                        view! {
-                                                            <p>"Fallback editor"</p>
-                                                            <JsonEditor
-                                                                state=None
-                                                                set_config_server_action=set_mish_state_action2
-                                                            />
-                                                        }
-                                                            .into_any()
-                                                    })
-                                            }
-                                        }
-                                    })
-                            }}
-                        </div>
-                        <div>{move || format!("{:?}", values.get())}</div>
-                        <div>
-                            {move || {
-                                if let Some(Ok(Some(value))) = values.get() {
-                                    let state = serde_json::to_vec(&value.state).unwrap();
-                                    let links = <DagJsonCodec as Links>::links(&state);
-                                    match links {
-                                        Ok(links) => {
-                                            view! {
-                                                {links
-                                                    .into_iter()
-                                                    .map(|link| {
-                                                        view! {
-                                                            <p>
-                                                                <a href=format!(
-                                                                    "/settings/dag-inspector/ipld-blob/{link}",
-                                                                )>"Link: "{link.to_string()}</a>
-                                                            </p>
-                                                        }
-                                                            .into_any()
-                                                    })
-                                                    .collect::<Vec<_>>()}
-                                            }
-                                                .into_any()
-                                        }
-                                        Err(e) => {
-                                            view! { <p>{format!("Error getting links: {e}")}</p> }
-                                                .into_any()
-                                        }
+                                            })
+                                            .unwrap_or_else(|| {
+                                                view! {
+                                                    <p>"Fallback editor"</p>
+                                                    <JsonEditor
+                                                        state=None
+                                                        set_config_server_action=set_mish_state_action2
+                                                    />
+                                                }
+                                                    .into_any()
+                                            })
                                     }
-                                } else {
-                                    ().into_any()
                                 }
-                            }}
-                        </div>
-                        <button on:click=move |_| {
-                            delete_mish_state_action.dispatch(DeleteMishState { name: name() });
-                        }>"Delete"</button>
-                    </Suspense>
+                            })
+                    }}
                 </div>
-            </div>
+                <Tooltip content=format!("{:?}", values.get())>
+                    // https://carloskiki.github.io/icondata/
+                    <Icon icon=icondata::AiInfoCircleFilled />
+                </Tooltip>
+                <div>
+                    {move || {
+                        if let Some(Ok(Some(value))) = values.get() {
+                            let state = serde_json::to_vec(&value.state).unwrap();
+                            let links = <DagJsonCodec as Links>::links(&state);
+                            match links {
+                                Ok(links) => {
+                                    view! {
+                                        {links
+                                            .into_iter()
+                                            .map(|link| {
+                                                view! {
+                                                    <p>
+                                                        <a href=format!(
+                                                            "/settings/dag-inspector/ipld-blob/{link}",
+                                                        )>"Link: "{link.to_string()}</a>
+                                                    </p>
+                                                }
+                                                    .into_any()
+                                            })
+                                            .collect::<Vec<_>>()}
+                                    }
+                                        .into_any()
+                                }
+                                Err(e) => {
+                                    view! { <p>{format!("Error getting links: {e}")}</p> }
+                                        .into_any()
+                                }
+                            }
+                        } else {
+                            ().into_any()
+                        }
+                    }}
+                </div>
+                <button on:click=move |_| {
+                    delete_mish_state_action.dispatch(DeleteMishState { name: name() });
+                }>"Delete"</button>
+            </Suspense>
         </main>
     }
 }

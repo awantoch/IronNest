@@ -1,6 +1,6 @@
 use {
     leptos::prelude::*,
-    thaw::{Textarea, TextareaResize},
+    thaw::{Button, Textarea, TextareaResize},
 };
 
 #[component]
@@ -10,12 +10,14 @@ pub fn TextEditor(
 ) -> impl IntoView {
     let value = RwSignal::new(state);
     view! {
-        <p>"Text editor"</p>
-        <Textarea value placeholder="Textarea" resize=TextareaResize::Both />
-        <button on:click=move |_| {
-            let s = value.get();
-            web_sys::console::log_1(&format!("state: {s:?}").into());
-            set_config_server_action(s);
-        }>"Save"</button>
+        // <p>"Text editor"</p>
+        <div>
+            <Textarea value resize=TextareaResize::Both />
+            <Button on:click=move |_| {
+                let s = value.get();
+                web_sys::console::log_1(&format!("state: {s:?}").into());
+                set_config_server_action(s);
+            }>"Save"</Button>
+        </div>
     }
 }

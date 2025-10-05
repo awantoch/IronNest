@@ -1,6 +1,6 @@
 use {
     leptos::prelude::*,
-    thaw::{Textarea, TextareaResize},
+    thaw::{Button, Textarea, TextareaResize},
 };
 
 #[component]
@@ -15,21 +15,23 @@ pub fn JsonEditor(
     );
 
     view! {
-        <p>"Raw editor"</p>
-        <Textarea value placeholder="Textarea" resize=TextareaResize::Both />
-        <button on:click=move |_| {
-            let s = value.get();
-            match serde_json::from_str::<serde_json::Value>(&s) {
-                Ok(s) => {
-                    set_config_server_action(s);
+        // <p>"Raw editor"</p>
+        <div>
+            <Textarea value resize=TextareaResize::Both />
+            <Button on:click=move |_| {
+                let s = value.get();
+                match serde_json::from_str::<serde_json::Value>(&s) {
+                    Ok(s) => {
+                        set_config_server_action(s);
+                    }
+                    Err(e) => {
+                        web_sys::window()
+                            .unwrap()
+                            .alert_with_message(&format!("Error parsing JSON: {e:?}"))
+                            .unwrap();
+                    }
                 }
-                Err(e) => {
-                    web_sys::window()
-                        .unwrap()
-                        .alert_with_message(&format!("Error parsing JSON: {e:?}"))
-                        .unwrap();
-                }
-            }
-        }>"Save"</button>
+            }>"Save"</Button>
+        </div>
     }
 }
